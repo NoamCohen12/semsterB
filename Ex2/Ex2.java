@@ -63,6 +63,7 @@ public class Ex2 {
 		if(xx!=null && yy!=null && lx==ly && lx>1 && lx<4) {
 			// *** add your code here ***
 			if (ly==2 && lx==2) {//In case we got 2 points by slope and point
+				if(xx[0]==xx[1]) {return null;}
 				ans= new double [2];//Rank of X at most 1
 				// y=mx+n
 				double x1= xx[0];//(x1,y1)
@@ -81,20 +82,22 @@ public class Ex2 {
 			 ***/
 			else {
 
-			double x1 = xx[2], x2 = xx[1], x3 = xx[0];
-			double y1 = yy[2], y2 = yy[1], y3 = yy[0];
 
-			double denom = (x1-x2) * (x1-x3) * (x2-x3);
-			double a = (x3 * (y2-y1) + x2 * (y1-y3) + x1 * (y3-y2)) / denom;
-			double b = (x3*x3 * (y1-y2) + x2*x2 * (y3-y1) + x1*x1 * (y2-y3)) / denom;
-			double c = (x2 * x3 * (x2-x3) * y1+x3 * x1 * (x3-x1) * y2+x1 * x2 * (x1-x2) * y3) / denom;
+				double x1 = xx[2], x2 = xx[1], x3 = xx[0];
+				double y1 = yy[2], y2 = yy[1], y3 = yy[0];
 
-			ans = new double [3];
-			ans[0] = c;
-			ans[1] = b;
-			ans[2] = a;
-			// **************************
-		}
+				double denom = (x1-x2) * (x1-x3) * (x2-x3);
+				if(denom==0) {return null;}
+				double a = (x3 * (y2-y1) + x2 * (y1-y3) + x1 * (y3-y2)) / denom;
+				double b = (x3*x3 * (y1-y2) + x2*x2 * (y3-y1) + x1*x1 * (y2-y3)) / denom;
+				double c = (x2 * x3 * (x2-x3) * y1+x3 * x1 * (x3-x1) * y2+x1 * x2 * (x1-x2) * y3) / denom;
+
+				ans = new double [3];
+				ans[0] = c;
+				ans[1] = b;
+				ans[2] = a;
+				// **************************
+			}
 		}
 		return ans;
 	}
@@ -109,6 +112,7 @@ public class Ex2 {
 		boolean ans = true;
 		if (p1==null && p2==null) {return true;}						// if the arrays are null
 		if (p1==null || p2==null) {return false;}					// if one of them is null
+
 		double[]ans1=fixArrays(p1);
 
 		double [] ans2=fixArrays(p2);
@@ -250,12 +254,7 @@ public class Ex2 {
 		if(p==null) {
 			return 0;
 		}
-		for (int i = 0; i < p.length; i++) {
-			sum= sum+p[i];
-		}
-		if(sum==0) {
-			return sum;//In case I get an array of zeros
-		}
+		
 
 		double ans = 0;
 		double n= (Math.abs(x1-x2)/numberOfSegments);//Calculate how many segments there are in the sum
@@ -281,20 +280,25 @@ public class Ex2 {
 	 */
 	public static double area(double[] p1,double[]p2, double x1, double x2, int numberOfTrapezoid) {
 		double ans = 0;
-		// *** add your code here ***
-
 		double width = Math.abs(x2-x1);												// length of range to compute
-		double boxWidth = width/numberOfTrapezoid;								// the length of every box
+		double n = width/numberOfTrapezoid;	                                         //The length of the segments
+		for (double i=x1;i<x2;i=i+n) {
+			if(f(p1,i)>=f(p2,i)) {                                    //If polynomial 1 is over polynomial 2 or intersects each other 
+				double base1=Math.abs (Ex2.f(p1, i)-Ex2.f(p2, i));
+				double base2=Math.abs (Ex2.f(p1, i+n)-Ex2.f(p2, i+n));
+				double high=Math.abs((i+n)-i);
+				ans=ans+((base1+base2)*high)/2;                        //Trapezoid area formula
+			}
+			else {                                                    //If polynomial 2 is over polynomial 1
+				double base1=Math.abs (Ex2.f(p2, i)-Ex2.f(p1, i));
+				double base2=Math.abs (Ex2.f(p2, i+n)-Ex2.f(p1, i+n));
+				double high=Math.abs((i+n)-i);
+				ans=ans+((base1+base2)*high)/2;                        //Trapezoid area formula
+				
+			}
 
-		for (int i=0; i<numberOfTrapezoid; i++) {								// loop to run over all boxes
-			double xi = x1 + boxWidth * i;
-			double sum1 = f(p1, xi);
-			double sum2 = f(p2, xi);
-			double length = Math.abs(sum1-sum2);							// the length between two polynoms
-			double boxArea = boxWidth * length;								// computes the area of specific box
-			ans = ans + boxArea;											// sum this area to the general area
 		}
-		// **************************
+
 		return ans;
 	}
 
@@ -464,8 +468,10 @@ public class Ex2 {
 	}
 	///////////////////////////////////
 	//Helper functions I added 
-	public static double[] fixArrays (double[]p1) {
-		for(int i=p1.length-1;i>0;i--) {
+	
+	
+	/**this function "fixed" arrays for example :1,2,0----> 1,2*/
+	public static double[] fixArrays (double[]p1) {		for(int i=p1.length-1;i>0;i--) {
 			if (p1[i]!=0) {
 				double ans[]=new double [i+1];
 				for (int j=0;j<=i;j++) {

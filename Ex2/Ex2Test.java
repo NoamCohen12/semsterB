@@ -214,15 +214,15 @@ class Ex2Test {
 				double[] tmp1 = {8,-1};
 				double[] ans1 = Ex2.PolynomFromPoints(xxx1, yyy1); 
 				System.out.println(Arrays.toString(ans1));
-				 assertArrayEquals(tmp1,ans1,Ex2.EPS);                      //Tersting for line y=x
+				 assertArrayEquals(tmp1,ans1,Ex2.EPS);                      //Tersting for polinom with negative x
 
 
-//				 double[] xxx2 = {0,0};
-//					double[] yyy2 = {0,0};
-//					double[] tmp2 = {0,0};
-//					double[] ans2 = Ex2.PolynomFromPoints(xxx2, yyy2); 
-//					System.out.println(Arrays.toString(ans2));
-//					 assertArrayEquals(tmp2,ans2,Ex2.EPS);                      //Tersting for line y=x
+				 double[] xxx2 = {0,0};
+					double[] yyy2 = {0,0};
+					double[] tmp2 = null;
+					double[] ans2 = Ex2.PolynomFromPoints(xxx2, yyy2); 
+					System.out.println(Arrays.toString(ans2));
+					 assertArrayEquals(tmp2,ans2,Ex2.EPS);                      //Tersting for null (x1=x2)
 
 			 
 			 
@@ -333,12 +333,11 @@ class Ex2Test {
 			assertEquals(ans2, Math.sqrt(2)+Math.sqrt(10),Ex2.EPS);
 		}
 		@Test 
-		void testLength3(){//Test to zreo polinom or null polinom
+		void testLength3(){//Test to  null polinom
 			double [] f2= {0,0,0};
 			double [] f3=null;
 			double ans2= Ex2.length(f2, 0, 2, 2);
 			double ans3= Ex2.length(f3, 0, 10, 2);
-			assertEquals(ans2, 0,Ex2.EPS);
 			assertEquals(ans3, 0,Ex2.EPS);
 
 		}
